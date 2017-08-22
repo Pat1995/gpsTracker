@@ -157,10 +157,22 @@ public class StatsActivity extends AppCompatActivity {
             totalDistance += distance[i];
             //Toast.makeText(getApplicationContext(), "D1 " + distance[i], Toast.LENGTH_SHORT).show();
         }
-        float srednia = totalDistance/diffInSec;
-        float sr = (float) (srednia * 3.6);
 
-        Toast.makeText(getApplicationContext(), "D1 " + sr, Toast.LENGTH_SHORT).show();
+        float[] speedArray = new float[distance.length];
+        float maxSpeed = 0;
+        for (int i =0; i <distance.length;i++) {
+            float speed = distance[i]/timeDifference[i];
+            speedArray[i] = (float) (speed * 3.6);
+            if (maxSpeed < speedArray[i])
+                maxSpeed = speedArray[i];
+            Toast.makeText(getApplicationContext(), "D1 " + speedArray[i], Toast.LENGTH_SHORT).show();
+        }
+
+        Toast.makeText(getApplicationContext(), "D2 " + maxSpeed, Toast.LENGTH_SHORT).show();
+        float avgSpeedMS = totalDistance/diffInSec;
+        float averageSpeedKH = (float) (avgSpeedMS * 3.6);
+
+        //Toast.makeText(getApplicationContext(), "D1 " + sr, Toast.LENGTH_SHORT).show();
 
         // Toast.makeText(getApplicationContext(), "D1 " + String.format("%.2f", totalDistance/1000), Toast.LENGTH_SHORT).show();
         //Toast.makeText(getApplicationContext(), "LAT " + lat[0] +", LNG " + lng[0], Toast.LENGTH_SHORT).show();

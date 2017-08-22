@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -31,11 +31,20 @@ public class StatsActivity extends AppCompatActivity {
 
     private String idJourney;
 
+    private TextView totalDistanceText;
+    private TextView totalTime;
+    private TextView avgSpeed;
+    private TextView maxSpeedText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stats);
         Intent intent = getIntent();
+        totalDistanceText = (TextView) findViewById(R.id.textView1);
+        totalTime = (TextView) findViewById(R.id.textView3);
+        avgSpeed = (TextView) findViewById(R.id.textView5);
+        maxSpeedText = (TextView) findViewById(R.id.textView7);
 
         idJourney = intent.getStringExtra("ID_JOURNEY");
 
@@ -165,12 +174,27 @@ public class StatsActivity extends AppCompatActivity {
             speedArray[i] = (float) (speed * 3.6);
             if (maxSpeed < speedArray[i])
                 maxSpeed = speedArray[i];
-            Toast.makeText(getApplicationContext(), "D1 " + speedArray[i], Toast.LENGTH_SHORT).show();
+           // Toast.makeText(getApplicationContext(), "D1 " + speedArray[i], Toast.LENGTH_SHORT).show();
         }
 
-        Toast.makeText(getApplicationContext(), "D2 " + maxSpeed, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "D2 " + maxSpeed, Toast.LENGTH_SHORT).show();
         float avgSpeedMS = totalDistance/diffInSec;
         float averageSpeedKH = (float) (avgSpeedMS * 3.6);
+        totalDistance = totalDistance/1000;
+
+        String totalDistanceString = String.format("%.2f", totalDistance);
+        String totalTimeString = timeString;
+        String avgSpeedString = String.format("%.2f", averageSpeedKH);
+        String maxSpeedTextString = String.format("%.2f", maxSpeed);
+
+        totalDistanceString=totalDistanceString.replaceAll(",",".");
+        avgSpeedString=avgSpeedString.replaceAll(",",".");
+        maxSpeedTextString=maxSpeedTextString.replaceAll(",",".");
+
+        totalDistanceText.setText(totalDistanceString + " km");
+        totalTime.setText(totalTimeString);
+        avgSpeed.setText(avgSpeedString + " km/h");
+        maxSpeedText.setText(maxSpeedTextString+ " km/h");
 
         //Toast.makeText(getApplicationContext(), "D1 " + sr, Toast.LENGTH_SHORT).show();
 

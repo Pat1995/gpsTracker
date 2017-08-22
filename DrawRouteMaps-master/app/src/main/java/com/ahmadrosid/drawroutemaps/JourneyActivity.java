@@ -35,12 +35,16 @@ public class JourneyActivity extends AppCompatActivity implements
     private ProgressDialog loading;
     private Spinner spinner2;
     public ArrayAdapter arrayAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_journey);
         spinner2 = (Spinner)findViewById(R.id.spinner2);
         spinner2.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
+
+
+
 
         Button buttonMap = (Button) findViewById(R.id.btn_map);
 

@@ -17,8 +17,8 @@ public class AppInfoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_stats);
-        aboutText = (TextView)findViewById(R.id.textView);
+        setContentView(R.layout.activity_about_app);
+        aboutText = (TextView)findViewById(R.id.textView1);
 
     }
 }

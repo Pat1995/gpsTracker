@@ -28,7 +28,9 @@ dependencies {
     compile 'com.google.android.gms:play-services:9.6.1'
     compile 'com.mcxiaoke.volley:library:1.0.19'
     testCompile 'junit:junit:4.12'
+    compile 'com.androidplot:androidplot-core:0.9.8'
     compile project(':drawroutemap')
+    compile files('Libs/GraphView-4.2.1.jar')
 }
 
 apply plugin: 'com.google.gms.google-services'

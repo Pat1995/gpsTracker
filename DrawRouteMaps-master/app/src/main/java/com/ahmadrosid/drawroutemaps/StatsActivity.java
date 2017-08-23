@@ -12,6 +12,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.GridLabelRenderer;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,6 +39,10 @@ public class StatsActivity extends AppCompatActivity {
     private TextView totalTime;
     private TextView avgSpeed;
     private TextView maxSpeedText;
+    private GraphView graphView;
+    LineGraphSeries<DataPoint> series;
+    private GraphView graphViewTime;
+    LineGraphSeries<DataPoint> seriesTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +53,21 @@ public class StatsActivity extends AppCompatActivity {
         totalTime = (TextView) findViewById(R.id.textView3);
         avgSpeed = (TextView) findViewById(R.id.textView5);
         maxSpeedText = (TextView) findViewById(R.id.textView7);
+
+        graphView = (GraphView) findViewById(R.id.graphSpeed);
+        graphView.setTitle("Speed graphs");
+        graphView.setTitleColor(000000);
+        graphView.getViewport().setScrollable(true);
+
+        GridLabelRenderer gridLabel = graphView.getGridLabelRenderer();
+        graphView.getGridLabelRenderer().setTextSize(17f);
+        graphView.getGridLabelRenderer().reloadStyles();
+        gridLabel.setHorizontalAxisTitle("Distance [km]");
+
+        GridLabelRenderer gridLabel2 = graphView.getGridLabelRenderer();
+        gridLabel.setVerticalAxisTitle("Speed [km/h]");
+
+//        graphView = (GraphView) findViewById(R.id.graphSpeedTime);
 
         idJourney = intent.getStringExtra("ID_JOURNEY");
 
@@ -174,7 +197,7 @@ public class StatsActivity extends AppCompatActivity {
             speedArray[i] = (float) (speed * 3.6);
             if (maxSpeed < speedArray[i])
                 maxSpeed = speedArray[i];
-           // Toast.makeText(getApplicationContext(), "D1 " + speedArray[i], Toast.LENGTH_SHORT).show();
+            // Toast.makeText(getApplicationContext(), "D1 " + speedArray[i], Toast.LENGTH_SHORT).show();
         }
 
         //Toast.makeText(getApplicationContext(), "D2 " + maxSpeed, Toast.LENGTH_SHORT).show();
@@ -195,6 +218,54 @@ public class StatsActivity extends AppCompatActivity {
         totalTime.setText(totalTimeString);
         avgSpeed.setText(avgSpeedString + " km/h");
         maxSpeedText.setText(maxSpeedTextString+ " km/h");
+
+        float[] distanceXAxis = new float[distance.length];
+        distanceXAxis[0] = distance[0]/1000;
+        for (int i = 1; i < distance.length; i++) {
+            distanceXAxis[i] = distance[i]/1000 + distanceXAxis[i-1];
+        }
+
+
+        series = new LineGraphSeries<DataPoint>();
+        for (int i = 0; i < distance.length; i++) {
+            series.appendData(new DataPoint(distanceXAxis[i], speedArray[i]), true, distance.length, true);
+        }
+
+        graphView.addSeries(series);
+
+        graphView.getViewport().setMinX(0);
+        graphView.getViewport().setMaxX(distanceXAxis[distance.length -1] + 0.5);
+        graphView.getViewport().setMinY(0);
+        graphView.getViewport().setMaxY(maxSpeed + 10);
+
+        graphView.getViewport().setYAxisBoundsManual(true);
+        graphView.getViewport().setXAxisBoundsManual(true);
+
+
+
+//
+//        float[] timeXAxis = new float[timeDifference.length];
+//        timeXAxis[0] = timeDifference[0];
+//        for (int i = 1; i < timeDifference.length; i++) {
+//            timeXAxis[i] = timeDifference[i] + timeXAxis[i-1];
+//            Toast.makeText(getApplicationContext(), "A " + timeXAxis[i], Toast.LENGTH_SHORT).show();
+//        }
+//
+//
+//        seriesTime = new LineGraphSeries<DataPoint>();
+//        for (int i = 0; i < distance.length; i++) {
+//            series.appendData(new DataPoint(timeXAxis[i], speedArray[i]), true, timeDifference.length, true);
+//        }
+//
+//        graphViewTime.addSeries(seriesTime);
+//
+//        graphViewTime.getViewport().setMinX(0);
+//        graphViewTime.getViewport().setMaxX(diffInSec/60);
+//        graphViewTime.getViewport().setMinY(0);
+//        graphViewTime.getViewport().setMaxY(maxSpeed + 10);
+//
+//        graphViewTime.getViewport().setYAxisBoundsManual(true);
+//        graphViewTime.getViewport().setXAxisBoundsManual(true);
 
         //Toast.makeText(getApplicationContext(), "D1 " + sr, Toast.LENGTH_SHORT).show();
 

@@ -55,13 +55,16 @@ public class StatsActivity extends AppCompatActivity {
         maxSpeedText = (TextView) findViewById(R.id.textView7);
 
         graphView = (GraphView) findViewById(R.id.graphSpeed);
-        graphView.setTitle("Speed graphs");
-        graphView.setTitleColor(000000);
-        graphView.getViewport().setScrollable(true);
+
 
         GridLabelRenderer gridLabel = graphView.getGridLabelRenderer();
         graphView.getGridLabelRenderer().setTextSize(17f);
         graphView.getGridLabelRenderer().reloadStyles();
+        //graphView.getLegendRenderer().setVisible(true);
+        graphView.setTitleTextSize(30f);
+        graphView.setTitle("Journey speed graph");
+        //graphView.setTitleColor();
+        graphView.getViewport().setScrollable(true);
         gridLabel.setHorizontalAxisTitle("Distance [km]");
 
         GridLabelRenderer gridLabel2 = graphView.getGridLabelRenderer();

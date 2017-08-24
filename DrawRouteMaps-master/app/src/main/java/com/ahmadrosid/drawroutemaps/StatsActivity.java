@@ -1,3 +1,4 @@
+
 package com.ahmadrosid.drawroutemaps;
 
 
@@ -5,7 +6,10 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -44,6 +48,7 @@ public class StatsActivity extends AppCompatActivity {
     private GraphView graphViewTime;
     LineGraphSeries<DataPoint> seriesTime;
 
+    private int driverAssesment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +60,6 @@ public class StatsActivity extends AppCompatActivity {
         maxSpeedText = (TextView) findViewById(R.id.textView7);
 
         graphView = (GraphView) findViewById(R.id.graphSpeed);
-
 
         GridLabelRenderer gridLabel = graphView.getGridLabelRenderer();
         graphView.getGridLabelRenderer().setTextSize(17f);
@@ -70,6 +74,14 @@ public class StatsActivity extends AppCompatActivity {
         GridLabelRenderer gridLabel2 = graphView.getGridLabelRenderer();
         gridLabel.setVerticalAxisTitle("Speed [km/h]");
 
+        Button buttonMap = (Button) findViewById(R.id.btn_analysys);
+
+        buttonMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showBehaviour(v);
+            }
+        });
 //        graphView = (GraphView) findViewById(R.id.graphSpeedTime);
 
         idJourney = intent.getStringExtra("ID_JOURNEY");
@@ -244,8 +256,14 @@ public class StatsActivity extends AppCompatActivity {
         graphView.getViewport().setYAxisBoundsManual(true);
         graphView.getViewport().setXAxisBoundsManual(true);
 
-
-
+        if (maxSpeed > 120)
+            driverAssesment = 4;
+        else if (maxSpeed > 90)
+            driverAssesment = 3;
+        else if (maxSpeed > 70)
+            driverAssesment = 2;
+        else
+            driverAssesment = 1;
 //
 //        float[] timeXAxis = new float[timeDifference.length];
 //        timeXAxis[0] = timeDifference[0];
@@ -303,6 +321,15 @@ public class StatsActivity extends AppCompatActivity {
         return 6366000*tt;
     }
 
+    public void showBehaviour(View view)
+    {
+        Toast.makeText(this, "You Must Buy-In To Play", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getApplicationContext(), ActivityDriverBehaviour.class);
+
+        intent.putExtra("DRIVER_ASSESMENT", String.valueOf(driverAssesment));
+        startActivity(intent);
+    }
+
     private void showJSON( String response){
         String lat="";
         String lon="";
@@ -332,4 +359,3 @@ public class StatsActivity extends AppCompatActivity {
     }
 
 }
-

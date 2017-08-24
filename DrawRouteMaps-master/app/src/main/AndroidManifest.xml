@@ -50,6 +50,12 @@
         </activity>
 
         <activity
+            android:name=".ActivityDriverBehaviour"
+            android:theme="@style/AppTheme"
+            android:label="Trackersi">
+        </activity>
+
+        <activity
         android:name=".StatsActivity"
         android:theme="@style/AppTheme"
         android:label="Trackersi">

@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,15 +17,15 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
-            android:text="Trackersi is an app that enable to monitor car journey. Monitoring process is based on GPS coordinates that were collected during journey through map and statistics as well. App was developed by Paweł Trojan as a BSc Thesis."
             android:textColor="#000000"
             android:textSize="23dp" />
 
         <ImageView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:src="@drawable/about" />
+            android:layout_marginTop="30dp"
+            android:src="@drawable/driver" />
 
     </LinearLayout>
+
 </LinearLayout>

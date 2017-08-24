@@ -42,25 +42,25 @@ public class ActivityDriverBehaviour extends AppCompatActivity {
     }
 
     public void slowDriving() {
-        String description = "Your driving style is calm and relaxed. Your goal of journey is to reach the destination. You do not care about high speed. You like listening to nice tunes in the car while driving.";
+        String description = "Your driving style is calm and relaxed. Your goal of journey is to reach the destination. You do not care about high speeds. You like listening to nice tunes in the car while driving. However people may honk the horn of your style of driving!";
         driverAssesment.setText(description);
 
     }
 
     public void properDriving() {
-        String description = "Your driving style is average. You look out for the well being of yours passengers as well as yourself. You do not break a few traffic laws in order to get somewhere more quickly.";
+        String description = "Your driving style is average. You look out for the well being of yours passengers as well as yourself. You do not break a few traffic laws in order to get somewhere more quickly. Keep it up!";
         driverAssesment.setText(description);
 
     }
 
     public void fastDriving() {
-        String description = "Your driving style is aggressive and dynamic. During journey you have reached high speed. You like feeling acceleration and the curves in the road. You often break traffic laws in order to get somewhere more quickly.";
+        String description = "Your driving style is aggressive and dynamic. During journey you have reached high speeds. You like feeling acceleration and the curves in the road. You often break traffic laws in order to get somewhere more quickly. You should remind yourself what speed limit means!";
         driverAssesment.setText(description);
 
     }
 
     public void dangeorusDriving() {
-        String description = "Your driving style is really dangerous. You do not look out for the well being of yours passengers as well as yourself. You often break traffic laws and the police is looking for you.";
+        String description = "Your driving style is really dangerous regardless road conditions. You do not look out for the well being of yours passengers as well as yourself. If you do not change your driving style you would kill someone and go to the jail!";
         driverAssesment.setText(description);
 
     }

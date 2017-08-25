@@ -35,6 +35,9 @@ public class JourneyActivity extends AppCompatActivity implements
     private ProgressDialog loading;
     private Spinner spinner2;
     public ArrayAdapter arrayAdapter;
+    private Button buttonMap;
+    private Button buttonStats;
+    private String name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,10 +46,7 @@ public class JourneyActivity extends AppCompatActivity implements
         spinner2 = (Spinner)findViewById(R.id.spinner2);
         spinner2.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
 
-
-
-
-        Button buttonMap = (Button) findViewById(R.id.btn_map);
+        buttonMap = (Button) findViewById(R.id.btn_map);
 
         buttonMap.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,7 +56,7 @@ public class JourneyActivity extends AppCompatActivity implements
         });
 
 
-        Button buttonStats = (Button) findViewById(R.id.btn_stat);
+        buttonStats = (Button) findViewById(R.id.btn_stat);
 
         buttonStats.setOnClickListener(new View.OnClickListener() {
             @Override

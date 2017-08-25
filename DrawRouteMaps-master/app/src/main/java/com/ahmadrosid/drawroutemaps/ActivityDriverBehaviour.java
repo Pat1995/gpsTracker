@@ -4,28 +4,24 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * Created by pat95 on 24.08.2017.
  */
 
 public class ActivityDriverBehaviour extends AppCompatActivity {
-
+    private String driverAsses;
     private TextView driverAssesment;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_behaviour);
 
         Intent intent = getIntent();
-
-        String driverAsses = intent.getStringExtra("DRIVER_ASSESMENT");
-        Toast.makeText(getApplicationContext(), "NAME " + driverAsses , Toast.LENGTH_SHORT).show();
+        driverAsses = intent.getStringExtra("DRIVER_ASSESMENT");
         driverAssesment = (TextView) findViewById(R.id.textView1);
 
-
         styleDriving(driverAsses);
-
     }
 
     public void styleDriving(String style) {

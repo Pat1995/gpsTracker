@@ -5,23 +5,20 @@ import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.widget.Toast;
 
 import com.ahmadrosid.lib.drawroutemap.DrawMarker;
 import com.ahmadrosid.lib.drawroutemap.DrawRouteMaps;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-
-
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,33 +31,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private ProgressDialog loading;
     private String idJourney;
+    private String url;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        Intent intent = getIntent();
 
+        Intent intent = getIntent();
         idJourney = intent.getStringExtra("ID_JOURNEY");
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
-//
+
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-
         loading = ProgressDialog.show(this,"Please wait...","Fetching...",false,false);
 
-        String url = Config.DATA_URL + idJourney;
+        url = Config.DATA_URL + idJourney;
 
         StringRequest stringRequest = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 loading.dismiss();
-
 
                 String lat1 = "";
                 String lon = "";
@@ -79,7 +77,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         latArray.add(lat1);
                         lonArray.add(lon);
                         timeArray.add(time);
-                        // textViewResult.setText("Lat:\t"+lat+"\nLng:\t" +lon+ "\nTime:\t"+ time);
                     }
 
                 } catch (JSONException e) {
@@ -113,8 +110,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     LatLng destination = new LatLng(lat[i + 1], lng[i + 1]);
                     DrawRouteMaps.getInstance(getApplicationContext())
                             .draw(origin, destination, mMap);
-                    // DrawMarker.getInstance(this).draw(mMap, origin, R.drawable.marker_a, "Origin Location");
-                    // DrawMarker.getInstance(this).draw(mMap, destination, R.drawable.marker_b, "Destination Location");
 
                     LatLngBounds bounds = new LatLngBounds.Builder()
                             .include(origin)
@@ -124,14 +119,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, displaySize.x, 250, 30));
                 }
 
-
             }
 
         },
                     new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                    //Toast.makeText(MainActivity.this,error.getMessage().toString(),Toast.LENGTH_LONG).show();
                 }
             });
 
@@ -139,7 +132,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         requestQueue.add(stringRequest);
 
     }
-
+/*
     private void getData() {
 
         loading = ProgressDialog.show(this,"Please wait...","Fetching...",false,false);
@@ -156,7 +149,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        //Toast.makeText(MainActivity.this,error.getMessage().toString(),Toast.LENGTH_LONG).show();
                     }
                 });
 
@@ -191,5 +183,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
     }
-
+*/
 }

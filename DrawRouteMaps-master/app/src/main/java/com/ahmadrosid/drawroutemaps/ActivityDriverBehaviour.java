@@ -17,11 +17,15 @@ public class ActivityDriverBehaviour extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_behaviour);
 
+        setDriverAsses();
+        styleDriving(driverAsses);
+    }
+
+    public void setDriverAsses() {
+
         Intent intent = getIntent();
         driverAsses = intent.getStringExtra("DRIVER_ASSESMENT");
         driverAssesment = (TextView) findViewById(R.id.textView1);
-
-        styleDriving(driverAsses);
     }
 
     public void styleDriving(String style) {

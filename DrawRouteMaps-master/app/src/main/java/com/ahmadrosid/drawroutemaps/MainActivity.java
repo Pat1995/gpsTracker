@@ -2,29 +2,20 @@ package com.ahmadrosid.drawroutemaps;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-
 import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.Toast;
 
-import com.ahmadrosid.lib.drawroutemap.DrawMarker;
-import com.ahmadrosid.lib.drawroutemap.DrawRouteMaps;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,38 +34,26 @@ public class MainActivity extends AppCompatActivity implements
     private ProgressDialog loading;
     private Spinner spinner;
     public ArrayAdapter arrayAdapter;
+    private Button buttonAboutApp;
+    private Button buttonJourney;
+    private String url;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        spinner = (Spinner)findViewById(R.id.spinner);
-        spinner.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
-        spinner.setOnItemSelectedListener(null);
 
-        Button button = (Button) findViewById(R.id.btn_about);
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showAppInfo(v);
-            }
-        });
-
-
-        Button button2 = (Button) findViewById(R.id.btn_journey);
-
-        button2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectJourney(v);
-            }
-        });
-
+        initialiseSpinner();
+        initialiseButtons();
 
         loading = ProgressDialog.show(this,"Please wait...","Fetching...",false,false);
 
-        String url = Config.NAME_URL;
+        url = Config.NAME_URL;
 
+        fetchJsonData();
+    }
+
+    public void fetchJsonData() {
         StringRequest stringRequest = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -94,30 +73,23 @@ public class MainActivity extends AppCompatActivity implements
                         name = collegeData.getString(Config.KEY_USER_NAME);
                         email = collegeData.getString(Config.KEY_USER_EMAIL);
                         userInfoList.add(new UserInfo(name, email));
-                        // textViewResult.setText("Lat:\t"+lat+"\nLng:\t" +lon+ "\nTime:\t"+ time);
                     }
 
                     arrayAdapter= new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item,userInfoList);
                     arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
                     spinner.setAdapter(arrayAdapter);
-                    Toast.makeText(getApplicationContext(), "Hello " + name +", You are successfully Added!", Toast.LENGTH_SHORT).show();
-                    //spinner.setOnItemSelectedListener((AdapterView.OnItemSelectedListener) getApplicationContext());
                     spinner.setOnItemSelectedListener(MainActivity.this);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-
-
             }
 
         },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        //Toast.makeText(MainActivity.this,error.getMessage().toString(),Toast.LENGTH_LONG).show();
                     }
                 });
 
@@ -126,37 +98,53 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+    public void initialiseSpinner() {
+        spinner = (Spinner)findViewById(R.id.spinner);
+        spinner.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
+        spinner.setOnItemSelectedListener(null);
+    }
+
+    public void initialiseButtons() {
+        buttonAboutApp = (Button) findViewById(R.id.btn_about);
+        buttonAboutApp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAppInfo(v);
+            }
+        });
+
+        buttonJourney = (Button) findViewById(R.id.btn_journey);
+        buttonJourney.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectJourney(v);
+            }
+        });
+    }
+
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        UserInfo userInfo = (UserInfo) spinner.getSelectedItem();
-
-        Toast.makeText(getApplicationContext(), "Hello " + userInfo.getName() + ", You are successfully Added!", Toast.LENGTH_SHORT).show();
-        //mStateSpinner.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, country.getStates()));
-//        Intent intent = new Intent(getApplicationContext(), JourneyActivity.class);
-//
-//        intent.putExtra("USER_NAME",userInfo.getName());
-//        startActivity(intent);
     }
 
 
     public void selectJourney(View view)
     {
         UserInfo userInfo = (UserInfo) spinner.getSelectedItem();
-
         Intent intent = new Intent(getApplicationContext(), JourneyActivity.class);
 
-        intent.putExtra("USER_NAME",userInfo.getName());
+        intent.putExtra("USER_NAME", userInfo.getName());
+
         startActivity(intent);
     }
 
     public void showUserInfo(View view)
     {
         UserInfo userInfo = (UserInfo) spinner.getSelectedItem();
-
         Intent intent = new Intent(getApplicationContext(), UserInfoActivity.class);
 
-        intent.putExtra("USER_NAME",userInfo.getName());
-        intent.putExtra("USER_EMAIL",userInfo.getEmail());
+        intent.putExtra("USER_NAME", userInfo.getName());
+        intent.putExtra("USER_EMAIL", userInfo.getEmail());
+
         startActivity(intent);
     }
 
@@ -169,7 +157,6 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
-        Toast.makeText(this, "You Must Buy-In To Play", Toast.LENGTH_SHORT).show();
     }
 
 

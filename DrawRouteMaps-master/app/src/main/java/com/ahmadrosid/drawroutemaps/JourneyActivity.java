@@ -10,7 +10,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -33,47 +32,35 @@ public class JourneyActivity extends AppCompatActivity implements
         AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener {
 
     private ProgressDialog loading;
-    private Spinner spinner2;
+    private Spinner journeySpinner;
     public ArrayAdapter arrayAdapter;
     private Button buttonMap;
     private Button buttonStats;
     private String name;
+    private String url;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_journey);
-        spinner2 = (Spinner)findViewById(R.id.spinner2);
-        spinner2.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
 
-        buttonMap = (Button) findViewById(R.id.btn_map);
-
-        buttonMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showMap(v);
-            }
-        });
-
-
-        buttonStats = (Button) findViewById(R.id.btn_stat);
-
-        buttonStats.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showStat(v);
-            }
-        });
-
-        Intent intent = getIntent();
-
-        String name = intent.getStringExtra("USER_NAME");
+        initialiseSpinner();
+        initialiseButtons();
 
         loading = ProgressDialog.show(this,"Please wait...","Fetching...",false,false);
-       // Toast.makeText(getApplicationContext(), ", name " + name, Toast.LENGTH_SHORT).show();
-        //String url = Config.JOURNEY_URL;
-        String url = Config.JOURNEY_URL + name;
-        Toast.makeText(getApplicationContext(), ", URL " + url, Toast.LENGTH_SHORT).show();
+
+        getIntentActivity();
+        fetchJsonData();
+    }
+
+    public void getIntentActivity() {
+        Intent intent = getIntent();
+
+        name = intent.getStringExtra("USER_NAME");
+        url = Config.JOURNEY_URL + name;
+    }
+
+    public void fetchJsonData() {
 
         StringRequest stringRequest = new StringRequest(url, new Response.Listener<String>() {
             @Override
@@ -96,15 +83,12 @@ public class JourneyActivity extends AppCompatActivity implements
                         name = collegeData.getString(Config.KEY_USER_NAME_JOURNEY);
                         dateJourney = collegeData.getString(Config.KEY_DATA_OF_JOURNEY);
                         journey.add(new Journey(id,name,dateJourney));
-                        // textViewResult.setText("Lat:\t"+lat+"\nLng:\t" +lon+ "\nTime:\t"+ time);
                     }
 
                     arrayAdapter= new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item,journey);
                     arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spinner2.setAdapter(arrayAdapter);
-                    Toast.makeText(getApplicationContext(), "ID " + id +", name " + name + "DATE " + dateJourney, Toast.LENGTH_SHORT).show();
-                    //spinner.setOnItemSelectedListener((AdapterView.OnItemSelectedListener) getApplicationContext());
-                    spinner2.setOnItemSelectedListener(JourneyActivity.this);
+                    journeySpinner.setAdapter(arrayAdapter);
+                    journeySpinner.setOnItemSelectedListener(JourneyActivity.this);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -118,51 +102,65 @@ public class JourneyActivity extends AppCompatActivity implements
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        //Toast.makeText(MainActivity.this,error.getMessage().toString(),Toast.LENGTH_LONG).show();
                     }
                 });
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
+    }
+
+    public void initialiseSpinner() {
+        journeySpinner = (Spinner)findViewById(R.id.spinner2);
+        journeySpinner.getBackground().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
 
     }
 
+    public void initialiseButtons() {
+        buttonMap = (Button) findViewById(R.id.btn_map);
+        buttonMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showMap(v);
+            }
+        });
+
+
+        buttonStats = (Button) findViewById(R.id.btn_stat);
+        buttonStats.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showStat(v);
+            }
+        });
+    }
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        Journey journey = (Journey) spinner2.getSelectedItem();
-
-        Toast.makeText(getApplicationContext(), "ID " + journey.getId() +", name " + journey.getName() + "DATE " + journey.getDateJourney(), Toast.LENGTH_SHORT).show();
-        //mStateSpinner.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, country.getStates()));
-//        Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
-//
-//        intent.putExtra("ID_JOURNEY",journey.getId());
-//        startActivity(intent);
     }
 
     public void showMap(View view)
     {
-        Journey journey = (Journey) spinner2.getSelectedItem();
+        Journey journey = (Journey) journeySpinner.getSelectedItem();
         Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
 
         intent.putExtra("ID_JOURNEY",journey.getId());
+
         startActivity(intent);
     }
 
 
     public void showStat(View view)
     {
-        Toast.makeText(this, "You Must Buy-In To Play", Toast.LENGTH_SHORT).show();
-        Journey journey = (Journey) spinner2.getSelectedItem();
+        Journey journey = (Journey) journeySpinner.getSelectedItem();
         Intent intent = new Intent(getApplicationContext(), StatsActivity.class);
 
-        intent.putExtra("ID_JOURNEY",journey.getId());
+        intent.putExtra("ID_JOURNEY", journey.getId());
+
         startActivity(intent);
     }
 
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
-        Toast.makeText(this, "You Must Buy-In To Play", Toast.LENGTH_SHORT).show();
     }
 
 

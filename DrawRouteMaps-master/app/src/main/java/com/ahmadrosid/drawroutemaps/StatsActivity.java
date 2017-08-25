@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -47,47 +46,24 @@ public class StatsActivity extends AppCompatActivity {
     LineGraphSeries<DataPoint> series;
     private GraphView graphViewTime;
     LineGraphSeries<DataPoint> seriesTime;
-
     private int driverAssesment;
+    private String url;
+    private Button buttonMap;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stats);
-        Intent intent = getIntent();
-        totalDistanceText = (TextView) findViewById(R.id.textView1);
-        totalTime = (TextView) findViewById(R.id.textView3);
-        avgSpeed = (TextView) findViewById(R.id.textView5);
-        maxSpeedText = (TextView) findViewById(R.id.textView7);
 
-        graphView = (GraphView) findViewById(R.id.graphSpeed);
-
-        GridLabelRenderer gridLabel = graphView.getGridLabelRenderer();
-        graphView.getGridLabelRenderer().setTextSize(17f);
-        graphView.getGridLabelRenderer().reloadStyles();
-        //graphView.getLegendRenderer().setVisible(true);
-        graphView.setTitleTextSize(30f);
-        graphView.setTitle("Journey speed graph");
-        //graphView.setTitleColor();
-        graphView.getViewport().setScrollable(true);
-        gridLabel.setHorizontalAxisTitle("Distance [km]");
-
-        GridLabelRenderer gridLabel2 = graphView.getGridLabelRenderer();
-        gridLabel.setVerticalAxisTitle("Speed [km/h]");
-
-        Button buttonMap = (Button) findViewById(R.id.btn_analysys);
-
-        buttonMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showBehaviour(v);
-            }
-        });
+        initialiseGraphicElements();
+        setGraphViewSetting();
+        getIntentActivity();
+        fetchJsonData();
 //        graphView = (GraphView) findViewById(R.id.graphSpeedTime);
 
-        idJourney = intent.getStringExtra("ID_JOURNEY");
+    }
 
-        String url = Config.DATA_URL + idJourney;
-
+    public void fetchJsonData() {
         StringRequest stringRequest = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -109,41 +85,62 @@ public class StatsActivity extends AppCompatActivity {
                         latArray.add(lat1);
                         lonArray.add(lon);
                         timeArray.add(time);
-                        // textViewResult.setText("Lat:\t"+lat+"\nLng:\t" +lon+ "\nTime:\t"+ time);
                     }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
-//                float[] lat = new float[latArray.size()];
-//                float[] lng = new float[lonArray.size()];
-//
-//                for (int i = 0; i < latArray.size(); i++) {
-//                    lat[i] = Float.parseFloat(latArray.get(i));
-//                }
-//
-//                for (int i = 0; i < lonArray.size(); i++) {
-//                    lng[i] = Float.parseFloat(lonArray.get(i));
-//                }
-
                 calculateData(latArray,lonArray,timeArray);
-
-                //Toast.makeText(getApplicationContext(), "LAT " + lat[0] +", LNG " + lng[0], Toast.LENGTH_SHORT).show();
-
             }
 
         },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        //Toast.makeText(MainActivity.this,error.getMessage().toString(),Toast.LENGTH_LONG).show();
                     }
                 });
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
+    }
 
+    public void getIntentActivity() {
+        Intent intent = getIntent();
+        idJourney = intent.getStringExtra("ID_JOURNEY");
+
+        url = Config.DATA_URL + idJourney;
+    }
+
+    public void initialiseGraphicElements() {
+        totalDistanceText = (TextView) findViewById(R.id.textView1);
+        totalTime = (TextView) findViewById(R.id.textView3);
+        avgSpeed = (TextView) findViewById(R.id.textView5);
+        maxSpeedText = (TextView) findViewById(R.id.textView7);
+        buttonMap = (Button) findViewById(R.id.btn_analysys);
+
+        buttonMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showBehaviour(v);
+            }
+        });
+    }
+
+    public void setGraphViewSetting() {
+
+        graphView = (GraphView) findViewById(R.id.graphSpeed);
+
+        GridLabelRenderer gridLabel = graphView.getGridLabelRenderer();
+        graphView.getGridLabelRenderer().setTextSize(17f);
+        graphView.getGridLabelRenderer().reloadStyles();
+        graphView.setTitleTextSize(30f);
+        graphView.setTitle("Journey speed graph");
+        graphView.getViewport().setScrollable(true);
+        gridLabel.setHorizontalAxisTitle("Distance [km]");
+
+        GridLabelRenderer gridLabel2 = graphView.getGridLabelRenderer();
+        gridLabel.setVerticalAxisTitle("Speed [km/h]");
     }
 
     private void calculateData(ArrayList<String> latArray, ArrayList<String> lonArray, ArrayList<String> timeArray) {
@@ -184,25 +181,17 @@ public class StatsActivity extends AppCompatActivity {
             long diffInMs1 = dateArray[i+1].getTime() - dateArray[i].getTime();
             long diffInSec1 = TimeUnit.MILLISECONDS.toSeconds(diffInMs1);
 
-            long hours1 = diffInSec1 / 3600;
-            long minutes1 = (diffInSec1 % 3600) / 60;
-            long seconds1 = diffInSec1 % 60;
-
             timeDifference[i] = diffInSec1;
-            //Toast.makeText(getApplicationContext(), "D1 " + timeDifference[i], Toast.LENGTH_SHORT).show();
         }
 
-        //Toast.makeText(getApplicationContext(), "D1 " + timeString, Toast.LENGTH_SHORT).show();
         for (int i = 0; i < latArray.size(); i++) {
             lat[i] = Float.parseFloat(latArray.get(i));
             lng[i] = Float.parseFloat(lonArray.get(i));
         }
 
         for (int i = 0; i < latArray.size() - 1;i++) {
-            //distance[i] = meterDistanceBetweenPoints(lat[i], lng[i],lat[i+1], lng[i+1]);
             distance[i] = getDistancBetweenTwoPoints(lat[i], lng[i],lat[i+1], lng[i+1]);
             totalDistance += distance[i];
-            //Toast.makeText(getApplicationContext(), "D1 " + distance[i], Toast.LENGTH_SHORT).show();
         }
 
         float[] speedArray = new float[distance.length];
@@ -212,10 +201,8 @@ public class StatsActivity extends AppCompatActivity {
             speedArray[i] = (float) (speed * 3.6);
             if (maxSpeed < speedArray[i])
                 maxSpeed = speedArray[i];
-            // Toast.makeText(getApplicationContext(), "D1 " + speedArray[i], Toast.LENGTH_SHORT).show();
         }
 
-        //Toast.makeText(getApplicationContext(), "D2 " + maxSpeed, Toast.LENGTH_SHORT).show();
         float avgSpeedMS = totalDistance/diffInSec;
         float averageSpeedKH = (float) (avgSpeedMS * 3.6);
         totalDistance = totalDistance/1000;
@@ -239,7 +226,6 @@ public class StatsActivity extends AppCompatActivity {
         for (int i = 1; i < distance.length; i++) {
             distanceXAxis[i] = distance[i]/1000 + distanceXAxis[i-1];
         }
-
 
         series = new LineGraphSeries<DataPoint>();
         for (int i = 0; i < distance.length; i++) {
@@ -305,57 +291,13 @@ public class StatsActivity extends AppCompatActivity {
         return distance[0];
     }
 
-    private double meterDistanceBetweenPoints(float lat_a, float lng_a, float lat_b, float lng_b) {
-        float pk = (float) (180.f/Math.PI);
-
-        float a1 = lat_a / pk;
-        float a2 = lng_a / pk;
-        float b1 = lat_b / pk;
-        float b2 = lng_b / pk;
-
-        float t1 = (float) ((float)Math.cos(a1)*Math.cos(a2)*Math.cos(b1)*Math.cos(b2));
-        float t2 = (float) ((float)Math.cos(a1)*Math.sin(a2)*Math.cos(b1)*Math.sin(b2));
-        float t3 = (float) ((float)Math.sin(a1)*Math.sin(b1));
-        double tt = Math.acos(t1 + t2 + t3);
-
-        return 6366000*tt;
-    }
-
     public void showBehaviour(View view)
     {
-        Toast.makeText(this, "You Must Buy-In To Play", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(getApplicationContext(), ActivityDriverBehaviour.class);
 
         intent.putExtra("DRIVER_ASSESMENT", String.valueOf(driverAssesment));
+
         startActivity(intent);
-    }
-
-    private void showJSON( String response){
-        String lat="";
-        String lon="";
-        String time = "";
-        ArrayList<String> latArray = new ArrayList<String>();
-        ArrayList<String> lonArray = new ArrayList<String>();
-        ArrayList<String> timeArray = new ArrayList<String>();
-        try {
-            JSONObject jsonObject = new JSONObject(response);
-            JSONArray result = jsonObject.getJSONArray(Config.JSON_ARRAY);
-            for (int i = 0; i < result.length(); i++)
-            {
-                JSONObject collegeData = result.getJSONObject(i);
-                lat = collegeData.getString(Config.KEY_NAME);
-                lon = collegeData.getString(Config.KEY_ADDRESS);
-                time = collegeData.getString(Config.KEY_VC);
-                latArray.add(lat);
-                lonArray.add(lon);
-                timeArray.add(time);
-                // textViewResult.setText("Lat:\t"+lat+"\nLng:\t" +lon+ "\nTime:\t"+ time);
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
     }
 
 }

@@ -2,7 +2,6 @@ package com.ahmadrosid.drawroutemaps;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.widget.TextView;
 
 /**
@@ -12,7 +11,6 @@ import android.widget.TextView;
 public class AppInfoActivity extends AppCompatActivity {
 
     private TextView aboutText;
-    View view =null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

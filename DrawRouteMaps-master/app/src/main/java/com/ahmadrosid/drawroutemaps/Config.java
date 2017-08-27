@@ -14,11 +14,9 @@ public class Config {
     public static final String KEY_USER_NAME = "name";
     public static final String KEY_USER_EMAIL = "email";
 
-
     public static final String KEY_ID_JOURNEY = "id";
     public static final String KEY_USER_NAME_JOURNEY = "user_name";
     public static final String KEY_DATA_OF_JOURNEY = "date_of_journey";
-
 
     public static final String JSON_ARRAY = "result";
 }
